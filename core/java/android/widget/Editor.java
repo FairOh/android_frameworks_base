@@ -1215,14 +1215,13 @@ public class Editor {
             InputMethodManager imm = InputMethodManager.peekInstance();
             if (imm != null) {
                 if (imm.isActive(mTextView)) {
-                    boolean reported = false;
                     if (ims.mContentChanged || ims.mSelectionModeChanged) {
                         // We are in extract mode and the content has changed
                         // in some way... just report complete new text to the
                         // input method.
-                        reported = reportExtractedText();
+                        reportExtractedText();
                     }
-                    if (!reported && highlight != null) {
+                    if (highlight != null) {
                         int candStart = -1;
                         int candEnd = -1;
                         if (mTextView.getText() instanceof Spannable) {
