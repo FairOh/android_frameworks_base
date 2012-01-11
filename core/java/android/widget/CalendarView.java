@@ -247,7 +247,12 @@ public class CalendarView extends FrameLayout {
     /**
      * Which month should be displayed/highlighted [0-11].
      */
-    private int mCurrentMonthDisplayed;
+    private int mCurrentMonthDisplayed = -1;
+
+    /**
+     * Which year should be displayed/highlighted.
+     */
+    private int mCurrentYearDisplayed = -1;
 
     /**
      * Used for tracking during a scroll.
@@ -1248,14 +1253,21 @@ public class CalendarView extends FrameLayout {
      * @param calendar A day in the new focus month.
      */
     private void setMonthDisplayed(Calendar calendar) {
-        mCurrentMonthDisplayed = calendar.get(Calendar.MONTH);
-        mAdapter.setFocusMonth(mCurrentMonthDisplayed);
-        final int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_MONTH_DAY
-                | DateUtils.FORMAT_SHOW_YEAR;
-        final long millis = calendar.getTimeInMillis();
-        String newMonthName = DateUtils.formatDateRange(mContext, millis, millis, flags);
-        mMonthName.setText(newMonthName);
-        mMonthName.invalidate();
+        final int newMonthDisplayed = calendar.get(Calendar.MONTH);
+        final int newYearDisplayed = calendar.get(Calendar.YEAR);
+
+        if (mCurrentMonthDisplayed != newMonthDisplayed
+                || mCurrentYearDisplayed != newYearDisplayed) {
+            mCurrentMonthDisplayed = newMonthDisplayed;
+            mCurrentYearDisplayed = newYearDisplayed;
+            mAdapter.setFocusMonth(mCurrentMonthDisplayed);
+            final int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_MONTH_DAY
+                    | DateUtils.FORMAT_SHOW_YEAR;
+            final long millis = calendar.getTimeInMillis();
+            String newMonthName = DateUtils.formatDateRange(mContext, millis, millis, flags);
+            mMonthName.setText(newMonthName);
+            mMonthName.invalidate();
+        }
     }
 
     /**
