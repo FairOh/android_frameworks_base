@@ -58,7 +58,7 @@ import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
 import com.android.systemui.R;
-
+import java.io.InputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -233,22 +233,16 @@ class SaveImageInBackgroundTask extends AsyncTask<SaveImageInBackgroundData, Voi
             out.flush();
             out.close();
 
-            if (!success) {
-                resolver.delete(uri, null, null);
-                File file = new File(mImageFilePath);
-                file.delete();
-                params[0].clearImage();
-                params[0].result = 1;
-            } else {
-                // update file size in the database
-                values.clear();
-                values.put(MediaStore.Images.ImageColumns.SIZE, new File(mImageFilePath).length());
-                resolver.update(uri, values, null, null);
+            // update file size in the database
+            values.clear();
+            InputStream in = resolver.openInputStream(uri);
+            int size = in.available();
+            values.put(MediaStore.Images.ImageColumns.SIZE, size);
+            resolver.update(uri, values, null, null);
+            in.close();
 
-                params[0].imageUri = uri;
-                params[0].image = null;
-                params[0].result = 0;
-            }
+            params[0].imageUri = uri;
+            params[0].result = 0;
         } catch (Exception e) {
             // IOException/UnsupportedOperationException may be thrown if external storage is not
             // mounted
