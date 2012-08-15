@@ -32,6 +32,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 class ContentProviderRecord {
     final ActivityManagerService service;
@@ -217,6 +218,21 @@ class ContentProviderRecord {
         sb.append('/');
         sb.append(name.flattenToShortString());
         return shortStringName = sb.toString();
+    }
+
+    /**
+     * Force removes handles to external process, if any, should be used
+     * only when the process hosting this content provider is terminated.
+     */
+    public void removeExternalProcessHandles() {
+        synchronized (service) {
+            if (externalProcessTokenToHandle != null) {
+                Iterator iterator = externalProcessTokenToHandle.keySet().iterator();
+                while (iterator.hasNext()) {
+                     removeExternalProcessHandleInternalLocked((IBinder)iterator.next());
+                }
+            }
+        }
     }
 
     // This class represents a handle from an external process to a provider.
