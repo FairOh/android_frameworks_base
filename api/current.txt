@@ -13767,6 +13767,7 @@ package android.net.sip {
     method public boolean getSendKeepAlive();
     method public java.lang.String getSipDomain();
     method public java.lang.String getUriString();
+    method public java.lang.String getUserAgent();
     method public java.lang.String getUserName();
     method public void writeToParcel(android.os.Parcel, int);
     field public static final android.os.Parcelable.Creator CREATOR;
@@ -13786,6 +13787,7 @@ package android.net.sip {
     method public android.net.sip.SipProfile.Builder setProfileName(java.lang.String);
     method public android.net.sip.SipProfile.Builder setProtocol(java.lang.String) throws java.lang.IllegalArgumentException;
     method public android.net.sip.SipProfile.Builder setSendKeepAlive(boolean);
+    method public android.net.sip.SipProfile.Builder setUserAgent(java.lang.String);
   }
 
   public abstract interface SipRegistrationListener {
