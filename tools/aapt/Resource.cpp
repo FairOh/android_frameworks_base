@@ -421,6 +421,12 @@ static void collect_files(const sp<AaptDir>& dir,
             }
         }
     }
+    const DefaultKeyedVector<String8, sp<AaptDir> >& subDirs = dir->getDirs();
+    int n = subDirs.size();
+    for(int i = 0; i < n; i++){
+        const sp<AaptDir>& subDir = subDirs.valueAt(i);
+        collect_files(subDir, resources);
+    }
 }
 
 static void collect_files(const sp<AaptAssets>& ass,

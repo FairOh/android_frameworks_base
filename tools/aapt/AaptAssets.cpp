@@ -1643,9 +1643,9 @@ status_t AaptGroup::addFile(const sp<AaptFile>& file)
             mLeaf.string(), mPath.string());
 #endif
 
-    SourcePos(file->getSourceFile(), -1).error("Duplicate file.\n%s: Original is here.",
+    SourcePos(file->getSourceFile(), -1).warning("Duplicate file.\n%s: Original is here.",
                                                getPrintableSource().string());
-    return UNKNOWN_ERROR;
+    return NO_ERROR;
 }
 
 void AaptGroup::removeFile(size_t index)
