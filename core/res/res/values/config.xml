@@ -1141,5 +1141,9 @@
     <string-array name="config_disabledUntilUsedPreinstalledImes" translatable="false">
         <item>com.android.inputmethod.latin</item>
     </string-array>
+    
+
+    <!-- kill app long press back -->
+    <integer name="config_backKillTimeout">2000</integer>
 
 </resources>
