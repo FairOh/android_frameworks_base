@@ -356,6 +356,9 @@ public interface SharedPreferences {
     /**
      * Registers a callback to be invoked when a change happens to a preference.
      * 
+     * <p>Note that the listener is referenced through a {@code WeakReference}.
+     * You must keep a reference to the listener yourself or it will be removed.
+     * 
      * @param listener The callback that will run.
      * @see #unregisterOnSharedPreferenceChangeListener
      */
