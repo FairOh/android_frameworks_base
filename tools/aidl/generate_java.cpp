@@ -1,4 +1,5 @@
 #include "generate_java.h"
+#include "JavaASTWriter.h"
 #include "Type.h"
 #include <string.h>
 #include <stdio.h>
@@ -91,7 +92,8 @@ generate_java(const string& filename, const string& originalSrc,
         }
     }
 
-    document->Write(to);
+    JavaASTWriter* writer = new JavaASTWriter(to);
+    document->Write(writer);
 
     fclose(to);
     return 0;

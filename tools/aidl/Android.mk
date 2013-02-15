@@ -15,6 +15,7 @@ LOCAL_SRC_FILES := \
 	aidl_language.cpp \
 	options.cpp \
 	search_path.cpp \
+	JavaASTWriter.cpp \
 	AST.cpp \
 	Type.cpp \
 	generate_java.cpp \

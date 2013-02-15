@@ -1,49 +1,6 @@
 #include "AST.h"
+#include "ASTWriter.h"
 #include "Type.h"
-
-void
-WriteModifiers(FILE* to, int mod, int mask)
-{
-    int m = mod & mask;
-
-    if (m & OVERRIDE) {
-        fprintf(to, "@Override ");
-    }
-
-    if ((m & SCOPE_MASK) == PUBLIC) {
-        fprintf(to, "public ");
-    }
-    else if ((m & SCOPE_MASK) == PRIVATE) {
-        fprintf(to, "private ");
-    }
-    else if ((m & SCOPE_MASK) == PROTECTED) {
-        fprintf(to, "protected ");
-    }
-
-    if (m & STATIC) {
-        fprintf(to, "static ");
-    }
-    
-    if (m & FINAL) {
-        fprintf(to, "final ");
-    }
-
-    if (m & ABSTRACT) {
-        fprintf(to, "abstract ");
-    }
-}
-
-void
-WriteArgumentList(FILE* to, const vector<Expression*>& arguments)
-{
-    size_t N = arguments.size();
-    for (size_t i=0; i<N; i++) {
-        arguments[i]->Write(to);
-        if (i != N-1) {
-            fprintf(to, ", ");
-        }
-    }
-}
 
 ClassElement::ClassElement()
 {
@@ -78,18 +35,9 @@ Field::GatherTypes(set<Type*>* types) const
 }
 
 void
-Field::Write(FILE* to)
+Field::Write(ASTWriter* writer)
 {
-    if (this->comment.length() != 0) {
-        fprintf(to, "%s\n", this->comment.c_str());
-    }
-    WriteModifiers(to, this->modifiers, SCOPE_MASK | STATIC | FINAL | OVERRIDE);
-    fprintf(to, "%s %s", this->variable->type->QualifiedName().c_str(),
-            this->variable->name.c_str());
-    if (this->value.length() != 0) {
-        fprintf(to, " = %s", this->value.c_str());
-    }
-    fprintf(to, ";\n");
+    writer->WriteField(this);
 }
 
 Expression::~Expression()
@@ -106,9 +54,9 @@ LiteralExpression::~LiteralExpression()
 }
 
 void
-LiteralExpression::Write(FILE* to)
+LiteralExpression::Write(ASTWriter* writer)
 {
-    fprintf(to, "%s", this->value.c_str());
+    writer->WriteLiteralExpression(this);
 }
 
 StringLiteralExpression::StringLiteralExpression(const string& v)
@@ -121,9 +69,9 @@ StringLiteralExpression::~StringLiteralExpression()
 }
 
 void
-StringLiteralExpression::Write(FILE* to)
+StringLiteralExpression::Write(ASTWriter* writer)
 {
-    fprintf(to, "\"%s\"", this->value.c_str());
+    writer->WriteStringLiteralExpression(this);
 }
 
 Variable::Variable()
@@ -158,20 +106,15 @@ Variable::GatherTypes(set<Type*>* types) const
 }
 
 void
-Variable::WriteDeclaration(FILE* to)
+Variable::WriteDeclaration(ASTWriter* writer)
 {
-    string dim;
-    for (int i=0; i<this->dimension; i++) {
-        dim += "[]";
-    }
-    fprintf(to, "%s%s %s", this->type->QualifiedName().c_str(), dim.c_str(),
-            this->name.c_str());
+    writer->WriteVariableDeclaration(this);
 }
 
 void
-Variable::Write(FILE* to)
+Variable::Write(ASTWriter* writer)
 {
-    fprintf(to, "%s", name.c_str());
+    writer->WriteVariable(this);
 }
 
 FieldVariable::FieldVariable(Expression* o, const string& n)
@@ -193,15 +136,9 @@ FieldVariable::~FieldVariable()
 }
 
 void
-FieldVariable::Write(FILE* to)
+FieldVariable::Write(ASTWriter* writer)
 {
-    if (this->object != NULL) {
-        this->object->Write(to);
-    }
-    else if (this->clazz != NULL) {
-        fprintf(to, "%s", this->clazz->QualifiedName().c_str());
-    }
-    fprintf(to, ".%s", name.c_str());
+    writer->WriteFieldVariable(this);
 }
 
 
@@ -218,14 +155,9 @@ StatementBlock::~StatementBlock()
 }
 
 void
-StatementBlock::Write(FILE* to)
+StatementBlock::Write(ASTWriter* writer)
 {
-    fprintf(to, "{\n");
-    int N = this->statements.size();
-    for (int i=0; i<N; i++) {
-        this->statements[i]->Write(to);
-    }
-    fprintf(to, "}\n");
+    writer->WriteStatementBlock(this);
 }
 
 void
@@ -250,10 +182,9 @@ ExpressionStatement::~ExpressionStatement()
 }
 
 void
-ExpressionStatement::Write(FILE* to)
+ExpressionStatement::Write(ASTWriter* writer)
 {
-    this->expression->Write(to);
-    fprintf(to, ";\n");
+    writer->WriteExpressionStatement(this);
 }
 
 Assignment::Assignment(Variable* l, Expression* r)
@@ -275,14 +206,9 @@ Assignment::~Assignment()
 }
 
 void
-Assignment::Write(FILE* to)
+Assignment::Write(ASTWriter* writer)
 {
-    this->lvalue->Write(to);
-    fprintf(to, " = ");
-    if (this->cast != NULL) {
-        fprintf(to, "(%s)", this->cast->QualifiedName().c_str());
-    }
-    this->rvalue->Write(to);
+    writer->WriteAssignment(this);
 }
 
 MethodCall::MethodCall(const string& n)
@@ -353,18 +279,9 @@ MethodCall::init(int n, va_list args)
 }
 
 void
-MethodCall::Write(FILE* to)
+MethodCall::Write(ASTWriter* writer)
 {
-    if (this->obj != NULL) {
-        this->obj->Write(to);
-        fprintf(to, ".");
-    }
-    else if (this->clazz != NULL) {
-        fprintf(to, "%s.", this->clazz->QualifiedName().c_str());
-    }
-    fprintf(to, "%s(", this->name.c_str());
-    WriteArgumentList(to, this->arguments);
-    fprintf(to, ")");
+    writer->WriteMethodCall(this);
 }
 
 Comparison::Comparison(Expression* l, const string& o, Expression* r)
@@ -379,13 +296,9 @@ Comparison::~Comparison()
 }
 
 void
-Comparison::Write(FILE* to)
+Comparison::Write(ASTWriter* writer)
 {
-    fprintf(to, "(");
-    this->lvalue->Write(to);
-    fprintf(to, "%s", this->op.c_str());
-    this->rvalue->Write(to);
-    fprintf(to, ")");
+    writer->WriteComparison(this);
 }
 
 NewExpression::NewExpression(Type* t)
@@ -416,11 +329,9 @@ NewExpression::init(int n, va_list args)
 }
 
 void
-NewExpression::Write(FILE* to)
+NewExpression::Write(ASTWriter* writer)
 {
-    fprintf(to, "new %s(", this->type->InstantiableName().c_str());
-    WriteArgumentList(to, this->arguments);
-    fprintf(to, ")");
+    writer->WriteNewExpression(this);
 }
 
 NewArrayExpression::NewArrayExpression(Type* t, Expression* s)
@@ -434,11 +345,9 @@ NewArrayExpression::~NewArrayExpression()
 }
 
 void
-NewArrayExpression::Write(FILE* to)
+NewArrayExpression::Write(ASTWriter* writer)
 {
-    fprintf(to, "new %s[", this->type->QualifiedName().c_str());
-    size->Write(to);
-    fprintf(to, "]");
+    writer->WriteNewArrayExpression(this);
 }
 
 Ternary::Ternary()
@@ -460,15 +369,9 @@ Ternary::~Ternary()
 }
 
 void
-Ternary::Write(FILE* to)
+Ternary::Write(ASTWriter* writer)
 {
-    fprintf(to, "((");
-    this->condition->Write(to);
-    fprintf(to, ")?(");
-    this->ifpart->Write(to);
-    fprintf(to, "):(");
-    this->elsepart->Write(to);
-    fprintf(to, "))");
+    writer->WriteTernary(this);
 }
 
 Cast::Cast()
@@ -488,11 +391,9 @@ Cast::~Cast()
 }
 
 void
-Cast::Write(FILE* to)
+Cast::Write(ASTWriter* writer)
 {
-    fprintf(to, "((%s)", this->type->QualifiedName().c_str());
-    expression->Write(to);
-    fprintf(to, ")");
+    writer->WriteCast(this);
 }
 
 VariableDeclaration::VariableDeclaration(Variable* l, Expression* r, Type* c)
@@ -514,17 +415,9 @@ VariableDeclaration::~VariableDeclaration()
 }
 
 void
-VariableDeclaration::Write(FILE* to)
+VariableDeclaration::Write(ASTWriter* writer)
 {
-    this->lvalue->WriteDeclaration(to);
-    if (this->rvalue != NULL) {
-        fprintf(to, " = ");
-        if (this->cast != NULL) {
-            fprintf(to, "(%s)", this->cast->QualifiedName().c_str());
-        }
-        this->rvalue->Write(to);
-    }
-    fprintf(to, ";\n");
+    writer->WriteVariableDeclaration(this);
 }
 
 IfStatement::IfStatement()
@@ -539,18 +432,9 @@ IfStatement::~IfStatement()
 }
 
 void
-IfStatement::Write(FILE* to)
+IfStatement::Write(ASTWriter* writer)
 {
-    if (this->expression != NULL) {
-        fprintf(to, "if (");
-        this->expression->Write(to);
-        fprintf(to, ") ");
-    }
-    this->statements->Write(to);
-    if (this->elseif != NULL) {
-        fprintf(to, "else ");
-        this->elseif->Write(to);
-    }
+    writer->WriteIfStatement(this);
 }
 
 ReturnStatement::ReturnStatement(Expression* e)
@@ -563,11 +447,9 @@ ReturnStatement::~ReturnStatement()
 }
 
 void
-ReturnStatement::Write(FILE* to)
+ReturnStatement::Write(ASTWriter* writer)
 {
-    fprintf(to, "return ");
-    this->expression->Write(to);
-    fprintf(to, ";\n");
+    writer->WriteReturnStatement(this);
 }
 
 TryStatement::TryStatement()
@@ -580,10 +462,9 @@ TryStatement::~TryStatement()
 }
 
 void
-TryStatement::Write(FILE* to)
+TryStatement::Write(ASTWriter* writer)
 {
-    fprintf(to, "try ");
-    this->statements->Write(to);
+    writer->WriteTryStatement(this);
 }
 
 CatchStatement::CatchStatement(Variable* e)
@@ -597,15 +478,9 @@ CatchStatement::~CatchStatement()
 }
 
 void
-CatchStatement::Write(FILE* to)
+CatchStatement::Write(ASTWriter* writer)
 {
-    fprintf(to, "catch ");
-    if (this->exception != NULL) {
-        fprintf(to, "(");
-        this->exception->WriteDeclaration(to);
-        fprintf(to, ") ");
-    }
-    this->statements->Write(to);
+    writer->WriteCatchStatement(this);
 }
 
 FinallyStatement::FinallyStatement()
@@ -618,10 +493,9 @@ FinallyStatement::~FinallyStatement()
 }
 
 void
-FinallyStatement::Write(FILE* to)
+FinallyStatement::Write(ASTWriter* writer)
 {
-    fprintf(to, "finally ");
-    this->statements->Write(to);
+    writer->WriteFinallyStatement(this);
 }
 
 Case::Case()
@@ -640,22 +514,9 @@ Case::~Case()
 }
 
 void
-Case::Write(FILE* to)
+Case::Write(ASTWriter* writer)
 {
-    int N = this->cases.size();
-    if (N > 0) {
-        for (int i=0; i<N; i++) {
-            string s = this->cases[i];
-            if (s.length() != 0) {
-                fprintf(to, "case %s:\n", s.c_str());
-            } else {
-                fprintf(to, "default:\n");
-            }
-        }
-    } else {
-        fprintf(to, "default:\n");
-    }
-    statements->Write(to);
+    writer->WriteCase(this);
 }
 
 SwitchStatement::SwitchStatement(Expression* e)
@@ -668,16 +529,9 @@ SwitchStatement::~SwitchStatement()
 }
 
 void
-SwitchStatement::Write(FILE* to)
+SwitchStatement::Write(ASTWriter* writer)
 {
-    fprintf(to, "switch (");
-    this->expression->Write(to);
-    fprintf(to, ")\n{\n");
-    int N = this->cases.size();
-    for (int i=0; i<N; i++) {
-        this->cases[i]->Write(to);
-    }
-    fprintf(to, "}\n");
+    writer->WriteSwitchStatement(this);
 }
 
 Break::Break()
@@ -689,9 +543,9 @@ Break::~Break()
 }
 
 void
-Break::Write(FILE* to)
+Break::Write(ASTWriter* writer)
 {
-    fprintf(to, "break;\n");
+    writer->WriteBreak(this);
 }
 
 Method::Method()
@@ -728,53 +582,9 @@ Method::GatherTypes(set<Type*>* types) const
 }
 
 void
-Method::Write(FILE* to)
+Method::Write(ASTWriter* writer)
 {
-    size_t N, i;
-
-    if (this->comment.length() != 0) {
-        fprintf(to, "%s\n", this->comment.c_str());
-    }
-
-    WriteModifiers(to, this->modifiers, SCOPE_MASK | STATIC | ABSTRACT | FINAL | OVERRIDE);
-
-    if (this->returnType != NULL) {
-        string dim;
-        for (i=0; i<this->returnTypeDimension; i++) {
-            dim += "[]";
-        }
-        fprintf(to, "%s%s ", this->returnType->QualifiedName().c_str(),
-                dim.c_str());
-    }
-   
-    fprintf(to, "%s(", this->name.c_str());
-
-    N = this->parameters.size();
-    for (i=0; i<N; i++) {
-        this->parameters[i]->WriteDeclaration(to);
-        if (i != N-1) {
-            fprintf(to, ", ");
-        }
-    }
-
-    fprintf(to, ")");
-
-    N = this->exceptions.size();
-    for (i=0; i<N; i++) {
-        if (i == 0) {
-            fprintf(to, " throws ");
-        } else {
-            fprintf(to, ", ");
-        }
-        fprintf(to, "%s", this->exceptions[i]->QualifiedName().c_str());
-    }
-
-    if (this->statements == NULL) {
-        fprintf(to, ";\n");
-    } else {
-        fprintf(to, "\n");
-        this->statements->Write(to);
-    }
+    writer->WriteMethod(this);
 }
 
 Class::Class()
@@ -811,56 +621,9 @@ Class::GatherTypes(set<Type*>* types) const
 }
 
 void
-Class::Write(FILE* to)
+Class::Write(ASTWriter* writer)
 {
-    size_t N, i;
-
-    if (this->comment.length() != 0) {
-        fprintf(to, "%s\n", this->comment.c_str());
-    }
-
-    WriteModifiers(to, this->modifiers, ALL_MODIFIERS);
-
-    if (this->what == Class::CLASS) {
-        fprintf(to, "class ");
-    } else {
-        fprintf(to, "interface ");
-    }
-
-    string name = this->type->Name();
-    size_t pos = name.rfind('.');
-    if (pos != string::npos) {
-        name = name.c_str() + pos + 1;
-    }
-
-    fprintf(to, "%s", name.c_str());
-
-    if (this->extends != NULL) {
-        fprintf(to, " extends %s", this->extends->QualifiedName().c_str());
-    }
-
-    N = this->interfaces.size();
-    if (N != 0) {
-        if (this->what == Class::CLASS) {
-            fprintf(to, " implements");
-        } else {
-            fprintf(to, " extends");
-        }
-        for (i=0; i<N; i++) {
-            fprintf(to, " %s", this->interfaces[i]->QualifiedName().c_str());
-        }
-    }
-
-    fprintf(to, "\n");
-    fprintf(to, "{\n");
-
-    N = this->elements.size();
-    for (i=0; i<N; i++) {
-        this->elements[i]->Write(to);
-    }
-
-    fprintf(to, "}\n");
-
+    writer->WriteClass(this);
 }
 
 Document::Document()
@@ -871,42 +634,9 @@ Document::~Document()
 {
 }
 
-static string
-escape_backslashes(const string& str)
-{
-    string result;
-    const size_t I=str.length();
-    for (size_t i=0; i<I; i++) {
-        char c = str[i];
-        if (c == '\\') {
-            result += "\\\\";
-        } else {
-            result += c;
-        }
-    }
-    return result;
-}
-
 void
-Document::Write(FILE* to)
+Document::Write(ASTWriter* writer)
 {
-    size_t N, i;
-
-    if (this->comment.length() != 0) {
-        fprintf(to, "%s\n", this->comment.c_str());
-    }
-    fprintf(to, "/*\n"
-                " * This file is auto-generated.  DO NOT MODIFY.\n"
-                " * Original file: %s\n"
-                " */\n", escape_backslashes(this->originalSrc).c_str());
-    if (this->package.length() != 0) {
-        fprintf(to, "package %s;\n", this->package.c_str());
-    }
-
-    N = this->classes.size();
-    for (i=0; i<N; i++) {
-        Class* c = this->classes[i];
-        c->Write(to);
-    }
+    writer->WriteDocument(this);
 }
 
