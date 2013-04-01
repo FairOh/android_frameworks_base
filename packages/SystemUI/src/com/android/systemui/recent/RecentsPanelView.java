@@ -65,6 +65,7 @@ import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.tablet.StatusBarPanel;
 import com.android.systemui.statusbar.tablet.TabletStatusBar;
 
+import java.io.OutputStreamWriter;
 import java.lang.Runtime;
 import java.util.ArrayList;
 
