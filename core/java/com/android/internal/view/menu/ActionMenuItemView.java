@@ -240,8 +240,13 @@ public class ActionMenuItemView extends TextView
         Toast cheatSheet = Toast.makeText(context, mItemData.getTitle(), Toast.LENGTH_SHORT);
         if (midy < displayFrame.height()) {
             // Show along the top; follow action buttons
-            cheatSheet.setGravity(Gravity.TOP | Gravity.END,
-                    screenWidth - screenPos[0] - width / 2, height);
+            if (isLayoutRtl()) {
+                cheatSheet.setGravity(Gravity.TOP | Gravity.LEFT,
+                        screenPos[0] + width / 2, height);
+            } else {
+                cheatSheet.setGravity(Gravity.TOP | Gravity.RIGHT,
+                        screenWidth - screenPos[0] - width / 2, height);
+            }
         } else {
             // Show along the bottom center
             cheatSheet.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, height);
