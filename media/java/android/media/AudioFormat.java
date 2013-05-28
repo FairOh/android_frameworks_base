@@ -36,6 +36,11 @@ public class AudioFormat {
     public static final int ENCODING_PCM_16BIT = 2;
     /** Audio data format: PCM 8 bit per sample. Not guaranteed to be supported by devices. */
     public static final int ENCODING_PCM_8BIT = 3;
+    /**
+     * Encoding to use for ENCODING_DEFAULT.
+     * @hide
+     */
+    public static final int ENCODING_DEFAULT_VALUE = ENCODING_PCM_16BIT;
 
     /** Invalid audio channel configuration */
     /** @deprecated use CHANNEL_INVALID instead  */
@@ -103,6 +108,12 @@ public class AudioFormat {
             CHANNEL_OUT_BACK_LEFT | CHANNEL_OUT_BACK_RIGHT |
             CHANNEL_OUT_LOW_FREQUENCY);
 
+    /**
+     * Channel configuration to use for CHANNEL_OUT_DEFAULT.
+     * @hide
+     */
+    public static final int CHANNEL_OUT_DEFAULT_VALUE = CHANNEL_OUT_MONO;
+
     public static final int CHANNEL_IN_DEFAULT = 1;
     public static final int CHANNEL_IN_LEFT = 0x4;
     public static final int CHANNEL_IN_RIGHT = 0x8;
@@ -120,5 +131,11 @@ public class AudioFormat {
     public static final int CHANNEL_IN_VOICE_DNLINK = 0x8000;
     public static final int CHANNEL_IN_MONO = CHANNEL_IN_FRONT;
     public static final int CHANNEL_IN_STEREO = (CHANNEL_IN_LEFT | CHANNEL_IN_RIGHT);
+
+    /**
+     * Channel configuration to use for CHANNEL_IN_DEFAULT.
+     * @hide
+     */
+    public static final int CHANNEL_IN_DEFAULT_VALUE = CHANNEL_IN_MONO;
 
 }
