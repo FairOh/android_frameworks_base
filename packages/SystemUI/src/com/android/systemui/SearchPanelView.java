@@ -45,7 +45,7 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.FrameLayout;
 
-import static com.android.internal.util.rascarlo.NavigationRingConstants.*;
+import com.android.internal.util.rascarlo.NavigationRingConstants;
 
 import com.android.internal.util.rascarlo.NavigationRingHelpers;
 import com.android.internal.widget.multiwaveview.GlowPadView;
@@ -211,7 +211,7 @@ public class SearchPanelView extends FrameLayout implements
 
     private boolean hasValidTargets() {
         for (String target : mTargetActivities) {
-            if (!TextUtils.isEmpty(target)) {
+            if (!TextUtils.isEmpty(target) && !target.equals(NavigationRingConstants.ACTION_NONE)) {
                 return true;
             }
         }
