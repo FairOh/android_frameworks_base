@@ -1161,6 +1161,15 @@ public class NotificationManagerService extends INotificationManager.Stub
                         return;
                     }
                     if (packageChanged) {
+                        try {
+                            final PackageInfo info = mContext.getPackageManager().getPackageInfo(pkgName, 0);
+                            if (info == null) {
+                                return;
+                            }
+                        } catch (NameNotFoundException e) {
+                            return;
+                        }
+
                         // We cancel notifications for packages which have just been disabled
                         final int enabled = mContext.getPackageManager()
                                 .getApplicationEnabledSetting(pkgName);
