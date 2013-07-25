@@ -2364,6 +2364,7 @@ public final class Settings {
          */
         public static final String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
 
+
         /**
          * Display style of the status bar battery information
          * 0: Display the stock battery information
@@ -2374,18 +2375,24 @@ public final class Settings {
          */
         public static final String STATUS_BAR_BATTERY = "status_bar_battery";
 
-        /** 
+        /**
          * Navigation bar customization
          *
          * @hide
          */
         public static final String NAV_BUTTONS = "nav_buttons";
 
-        /** 
+        /**
          * Height of navigation bar buttons
          * @hide
          */
         public static final String NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
+
+        /**
+         * Expanded Desktop feature.
+         * @hide
+         */
+        public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
 
         /** 
          * Settings to backup. This is here so that it's in the same place as the settings
