@@ -168,4 +168,7 @@
 
     <!-- Default for Settings.Secure.USER_SETUP_COMPLETE -->
     <bool name="def_user_setup_complete">false</bool>
+    
+    <!-- Volume adjust sound -->
+    <integer name="def_volume_adjust_sounds_enabled">1</integer>
 </resources>
