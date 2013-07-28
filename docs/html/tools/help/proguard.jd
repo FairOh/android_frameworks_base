@@ -67,7 +67,7 @@ you can specify its location like this:</p>
 proguard.config=proguard.cfg
 </pre>
 <p>
-You can also move the the file to anywhere you want, and specify the absolute path to it:
+You can also move the file to anywhere you want, and specify the absolute path to it:
 </p>
 <pre class="no-pretty-print">
 proguard.config=/path/to/proguard.cfg
