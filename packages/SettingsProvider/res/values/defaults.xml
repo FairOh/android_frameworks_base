@@ -169,6 +169,10 @@
     <!-- Default for Settings.Secure.USER_SETUP_COMPLETE -->
     <bool name="def_user_setup_complete">false</bool>
     
+    <!-- BUILD TWEAKS START -->
     <!-- Volume adjust sound -->
     <integer name="def_volume_adjust_sounds_enabled">1</integer>
+    
+    <!-- Default for Settings.Secure.DIALPAD_AUTOCOMPLETE. -->
+    <integer name="def_dialpad_autocomplete">1</integer>
 </resources>
