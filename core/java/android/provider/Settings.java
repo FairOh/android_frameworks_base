@@ -2365,6 +2365,16 @@ public final class Settings {
         public static final String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
 
         /**
+         * Display style of the status bar battery information
+         * 0: Display the stock battery information
+         * 1: Display battery percentage only
+         * 2: Hide the battery information
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY = "status_bar_battery";
+
+        /** 
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
