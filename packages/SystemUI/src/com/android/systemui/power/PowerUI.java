@@ -31,6 +31,9 @@ import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.os.Vibrator;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -216,6 +219,15 @@ public class PowerUI extends SystemUI {
                 });
             }
 
+	    PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            WakeLock wakeLock = pm.newWakeLock((PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), TAG);
+            /*
+                * allow sleep after 3 sec; this will solve the problem of
+                * low battery popup when screen is off. It will force the
+                * screen to turn-on for user can see low battery popup.
+            */
+            wakeLock.acquire(3000);
+
             AlertDialog d = b.create();
             d.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -227,6 +239,15 @@ public class PowerUI extends SystemUI {
             d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             d.getWindow().getAttributes().privateFlags |=
                     WindowManager.LayoutParams.PRIVATE_FLAG_SHOW_FOR_ALL_USERS;
+
+	     Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+            /*
+                * vibrate for 0.5 sec; this request(vibrate) comes from user
+                * experience that phone must vibrate when low battery popup
+                * happens and system is in silent mode.
+            */
+            vibrator.vibrate(500);
+
             d.show();
             mLowBatteryDialog = d;
         }
