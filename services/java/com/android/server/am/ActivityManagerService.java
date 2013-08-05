@@ -6838,8 +6838,10 @@ public final class ActivityManagerService  extends ActivityManagerNative
         enforceNotIsolatedCaller("publishContentProviders");
         synchronized (this) {
             final ProcessRecord r = getRecordForAppLocked(caller);
-            if (DEBUG_MU)
+
+            if (r != null && DEBUG_MU)
                 Slog.v(TAG_MU, "ProcessRecord uid = " + r.uid);
+
             if (r == null) {
                 throw new SecurityException(
                         "Unable to find app for caller " + caller
@@ -6856,9 +6858,10 @@ public final class ActivityManagerService  extends ActivityManagerNative
                     continue;
                 }
                 ContentProviderRecord dst = r.pubProviders.get(src.info.name);
-                if (DEBUG_MU)
-                    Slog.v(TAG_MU, "ContentProviderRecord uid = " + dst.uid);
                 if (dst != null) {
+                    if (DEBUG_MU)
+                        Slog.v(TAG_MU, "ContentProviderRecord uid = " + dst.uid);
+
                     ComponentName comp = new ComponentName(dst.info.packageName, dst.info.name);
                     mProviderMap.putProviderByClass(comp, dst);
                     String names[] = dst.info.authority.split(";");
