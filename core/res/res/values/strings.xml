@@ -2169,6 +2169,8 @@
     <!-- When the lock screen is showing, the phone is plugged in and the battery is fully
          charged, say that it is charged. -->
     <string name="lockscreen_charged">Charged</string>
+    <!-- When the lock screen is showing, the phone is plugged in, but the phone is not charging, say that it is not charging. -->
+    <string name="lockscreen_not_charging">Plugged in, not charging</string>
     <!-- A short representation of charging information, e.g "34%" -->
     <string name="lockscreen_battery_short"><xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
 
