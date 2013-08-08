@@ -2464,8 +2464,8 @@ public final class Settings {
             SIP_CALL_OPTIONS,
             SIP_RECEIVE_CALLS,
             POINTER_SPEED,
-            VIBRATE_WHEN_RINGING,
-            MISSED_CALL_BREATH, 
+            VIBRATE_WHEN_RINGING
+            MISSED_CALL_BREATH 
             MMS_BREATH 
         };
 
