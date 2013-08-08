@@ -2393,12 +2393,6 @@ public final class Settings {
          */
         public static final String MISSED_CALL_BREATH = "missed_call_breath";
 
-        /**
-         * Give MMS Notifications a breathing effect
-         * @hide
-         */
-        public static final String MMS_BREATH = "mms_breath"; 
-
         /** 
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -2466,7 +2460,6 @@ public final class Settings {
             POINTER_SPEED,
             VIBRATE_WHEN_RINGING
             MISSED_CALL_BREATH 
-            MMS_BREATH 
         };
 
         // Settings moved to Settings.Secure
