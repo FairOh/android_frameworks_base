@@ -1403,12 +1403,12 @@ public final class Settings {
         /** @hide */
         public static boolean putBooleanForUser(ContentResolver cr, String name, Boolean value,
                 int userHandle) {
-      if (value == true) 
-        return putStringForUser(cr, name, "1", userHandle);
-      else
-        return putStringForUser(cr, name, "0", userHandle);    
-        }   
-     
+            if (value == true) 
+                return putStringForUser(cr, name, "1", userHandle);
+            else
+                return putStringForUser(cr, name, "0", userHandle);        
+        }    
+         
         /**
          * Convenience function to read all of the current
          * configuration-related settings into a
