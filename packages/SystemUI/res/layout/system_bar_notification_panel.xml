@@ -24,6 +24,15 @@
     android:gravity="end"
     >
 
+<com.android.systemui.statusbar.policy.CircleBattery
+    android:id="@+id/panel_circle_battery"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:singleLine="true"
+    android:paddingLeft="6dp"
+    android:layout_gravity="center_vertical"
+     />
+
     <!-- lift the panel up off the status bar while leaving a touchable are -->
     <Space
         android:id="@+id/system_bar_notification_panel_bottom_space"
