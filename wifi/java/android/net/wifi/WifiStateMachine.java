@@ -3459,6 +3459,7 @@ public class WifiStateMachine extends StateMachine {
     class WpsRunningState extends State {
         //Tracks the source to provide a reply
         private Message mSourceMessage;
+        private boolean bEnableAllNetworks = true;
         @Override
         public void enter() {
             mSourceMessage = Message.obtain(getCurrentMessage());
@@ -3475,6 +3476,7 @@ public class WifiStateMachine extends StateMachine {
                     mSourceMessage = null;
                     deferMessage(message);
                     transitionTo(mDisconnectedState);
+                    bEnableAllNetworks = false;
                     break;
                 case WifiMonitor.WPS_OVERLAP_EVENT:
                     replyToMessage(mSourceMessage, WifiManager.WPS_FAILED,
@@ -3482,6 +3484,7 @@ public class WifiStateMachine extends StateMachine {
                     mSourceMessage.recycle();
                     mSourceMessage = null;
                     transitionTo(mDisconnectedState);
+                    bEnableAllNetworks = false;
                     break;
                 case WifiMonitor.WPS_FAIL_EVENT:
                     //arg1 has the reason for the failure
@@ -3489,6 +3492,7 @@ public class WifiStateMachine extends StateMachine {
                     mSourceMessage.recycle();
                     mSourceMessage = null;
                     transitionTo(mDisconnectedState);
+                    bEnableAllNetworks = false;
                     break;
                 case WifiMonitor.WPS_TIMEOUT_EVENT:
                     replyToMessage(mSourceMessage, WifiManager.WPS_FAILED,
@@ -3496,6 +3500,7 @@ public class WifiStateMachine extends StateMachine {
                     mSourceMessage.recycle();
                     mSourceMessage = null;
                     transitionTo(mDisconnectedState);
+                    bEnableAllNetworks = false;
                     break;
                 case WifiManager.START_WPS:
                     replyToMessage(message, WifiManager.WPS_FAILED, WifiManager.IN_PROGRESS);
@@ -3507,6 +3512,7 @@ public class WifiStateMachine extends StateMachine {
                         replyToMessage(message, WifiManager.CANCEL_WPS_FAILED, WifiManager.ERROR);
                     }
                     transitionTo(mDisconnectedState);
+                    bEnableAllNetworks = false;
                     break;
                 /* Defer all commands that can cause connections to a different network
                  * or put the state machine out of connect mode
@@ -3543,7 +3549,9 @@ public class WifiStateMachine extends StateMachine {
 
         @Override
         public void exit() {
-            mWifiConfigStore.enableAllNetworks();
+            if (bEnableAllNetworks == true) {
+                mWifiConfigStore.enableAllNetworks();
+            }
             mWifiConfigStore.loadConfiguredNetworks();
         }
     }
