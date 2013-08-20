@@ -23,7 +23,9 @@ import com.android.server.display.DisplayManagerService;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -35,6 +37,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.text.format.DateUtils;
 import android.util.FloatMath;
 import android.util.Slog;
@@ -166,6 +169,9 @@ final class DisplayPowerController {
 
     // The display blanker.
     private final DisplayBlanker mDisplayBlanker;
+
+    // Our context
+    private final Context mContext;
 
     // Our handler.
     private final DisplayControllerHandler mHandler;
@@ -352,6 +358,7 @@ final class DisplayPowerController {
             DisplayManagerService displayManager,
             DisplayBlanker displayBlanker,
             Callbacks callbacks, Handler callbackHandler) {
+        mContext = context;
         mHandler = new DisplayControllerHandler(looper);
         mNotifier = notifier;
         mDisplayBlanker = displayBlanker;
