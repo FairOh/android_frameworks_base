@@ -2143,6 +2143,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
         }
         thisNet.setTeardownRequested(false);
         updateNetworkSettings(thisNet);
+        updateMtuSizeSettings(thisNet);
         handleConnectivityChange(newNetType, false);
         sendConnectedBroadcastDelayed(info, getConnectivityChangeDelay());
 
@@ -2454,6 +2455,21 @@ public class ConnectivityService extends IConnectivityManager.Stub {
         return routesChanged;
     }
 
+   /**
+     * Reads the network specific MTU size from reources.
+     * and set it on it's iface.
+     */
+   private void updateMtuSizeSettings(NetworkStateTracker nt) {
+       final String iface = nt.getLinkProperties().getInterfaceName();
+       final int mtu = nt.getLinkProperties().getMtu();
+
+       try {
+           if (VDBG) log("Setting MTU size: " + iface + ", " + mtu);
+           mNetd.setMtu(iface, mtu);
+       } catch (Exception e) {
+           Slog.e(TAG, "exception in setMtu()" + e);
+       }
+   }
 
    /**
      * Reads the network specific TCP buffer sizes from SystemProperties

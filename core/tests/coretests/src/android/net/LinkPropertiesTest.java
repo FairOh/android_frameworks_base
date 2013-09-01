@@ -32,6 +32,7 @@ public class LinkPropertiesTest extends TestCase {
     private static String GATEWAY1 = "75.208.8.1";
     private static String GATEWAY2 = "69.78.8.1";
     private static String NAME = "qmi0";
+    private static int MTU = 1500;
 
     public void assertLinkPropertiesEqual(LinkProperties source, LinkProperties target) {
         // Check implementation of equals(), element by element.
@@ -52,6 +53,9 @@ public class LinkPropertiesTest extends TestCase {
 
         assertTrue(source.isIdenticalStackedLinks(target));
         assertTrue(target.isIdenticalStackedLinks(source));
+
+        assertTrue(source.isIdenticalMtu(target));
+        assertTrue(target.isIdenticalMtu(source));
 
         // Check result of equals().
         assertTrue(source.equals(target));
@@ -86,6 +90,7 @@ public class LinkPropertiesTest extends TestCase {
             // set 2 gateways
             source.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY1)));
             source.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
+            source.setMtu(MTU);
 
             LinkProperties target = new LinkProperties();
 
@@ -99,6 +104,7 @@ public class LinkPropertiesTest extends TestCase {
             target.addDns(NetworkUtils.numericToInetAddress(DNS2));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY1)));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
+            target.setMtu(MTU);
 
             assertLinkPropertiesEqual(source, target);
 
@@ -113,6 +119,7 @@ public class LinkPropertiesTest extends TestCase {
             target.addDns(NetworkUtils.numericToInetAddress(DNS2));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY1)));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
+            target.setMtu(MTU);
             assertFalse(source.equals(target));
 
             target.clear();
@@ -126,6 +133,7 @@ public class LinkPropertiesTest extends TestCase {
             target.addDns(NetworkUtils.numericToInetAddress(DNS2));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY1)));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
+            target.setMtu(MTU);
             assertFalse(source.equals(target));
 
             target.clear();
@@ -139,6 +147,7 @@ public class LinkPropertiesTest extends TestCase {
             target.addDns(NetworkUtils.numericToInetAddress(DNS2));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY1)));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
+            target.setMtu(MTU);
             assertFalse(source.equals(target));
 
             target.clear();
@@ -152,6 +161,21 @@ public class LinkPropertiesTest extends TestCase {
             // change gateway
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress("75.208.8.2")));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
+            target.setMtu(MTU);
+            assertFalse(source.equals(target));
+
+            target.clear();
+            target.setInterfaceName(NAME);
+            target.addLinkAddress(new LinkAddress(
+                                NetworkUtils.numericToInetAddress(ADDRV4), 32));
+            target.addLinkAddress(new LinkAddress(
+                                NetworkUtils.numericToInetAddress(ADDRV6), 128));
+            target.addDns(NetworkUtils.numericToInetAddress(DNS1));
+            target.addDns(NetworkUtils.numericToInetAddress(DNS2));
+            target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY1)));
+            target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
+            // change mtu
+            target.setMtu(1440);
             assertFalse(source.equals(target));
 
         } catch (Exception e) {
@@ -176,6 +200,7 @@ public class LinkPropertiesTest extends TestCase {
             // set 2 gateways
             source.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY1)));
             source.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
+            source.setMtu(MTU);
 
             LinkProperties target = new LinkProperties();
             // Exchange order
@@ -188,6 +213,7 @@ public class LinkPropertiesTest extends TestCase {
             target.addDns(NetworkUtils.numericToInetAddress(DNS1));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY2)));
             target.addRoute(new RouteInfo(NetworkUtils.numericToInetAddress(GATEWAY1)));
+            target.setMtu(MTU);
 
             assertLinkPropertiesEqual(source, target);
         } catch (Exception e) {

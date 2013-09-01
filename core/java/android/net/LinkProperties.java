@@ -65,6 +65,7 @@ public class LinkProperties implements Parcelable {
     private String mDomains;
     private Collection<RouteInfo> mRoutes = new ArrayList<RouteInfo>();
     private ProxyProperties mHttpProxy;
+    private int mMtu;
 
     // Stores the properties of links that are "stacked" above this link.
     // Indexed by interface name to allow modification and to prevent duplicates being added.
@@ -103,6 +104,7 @@ public class LinkProperties implements Parcelable {
             for (LinkProperties l: source.mStackedLinks.values()) {
                 addStackedLink(l);
             }
+            setMtu(source.getMtu());
         }
     }
 
@@ -158,6 +160,14 @@ public class LinkProperties implements Parcelable {
 
     public void setDomains(String domains) {
         mDomains = domains;
+    }
+
+    public void setMtu(int mtu) {
+        mMtu = mtu;
+    }
+
+    public int getMtu() {
+        return mMtu;
     }
 
     private RouteInfo routeWithInterface(RouteInfo route) {
@@ -253,6 +263,7 @@ public class LinkProperties implements Parcelable {
         mRoutes.clear();
         mHttpProxy = null;
         mStackedLinks.clear();
+        mMtu = 0;
     }
 
     /**
@@ -277,6 +288,8 @@ public class LinkProperties implements Parcelable {
 
         String domainName = "Domains: " + mDomains;
 
+        String mtu = "MTU: " + mMtu;
+
         String routes = " Routes: [";
         for (RouteInfo route : mRoutes) routes += route.toString() + ",";
         routes += "] ";
@@ -290,7 +303,8 @@ public class LinkProperties implements Parcelable {
             }
             stacked += "] ";
         }
-        return "{" + ifaceName + linkAddresses + routes + dns + domainName + proxy + stacked + "}";
+        return "{" + ifaceName + linkAddresses + routes + dns + domainName + mtu
+            + proxy + stacked + "}";
     }
 
     /**
@@ -391,6 +405,16 @@ public class LinkProperties implements Parcelable {
         return true;
     }
 
+    /**
+     * Compares this {@code LinkProperties} MTU against the target
+     *
+     * @@param target LinkProperties to compare.
+     * @return {@code true} if both are identical, {@code false} otherwise.
+     */
+    public boolean isIdenticalMtu(LinkProperties target) {
+        return getMtu() == target.getMtu();
+    }
+
     @Override
     /**
      * Compares this {@code LinkProperties} instance against the target
@@ -422,7 +446,8 @@ public class LinkProperties implements Parcelable {
                 isIdenticalDnses(target) &&
                 isIdenticalRoutes(target) &&
                 isIdenticalHttpProxy(target) &&
-                isIdenticalStackedLinks(target);
+                isIdenticalStackedLinks(target) &&
+                isIdenticalMtu(target);
     }
 
     /**
@@ -530,7 +555,8 @@ public class LinkProperties implements Parcelable {
                 + ((null == mDomains) ? 0 : mDomains.hashCode())
                 + mRoutes.size() * 41
                 + ((null == mHttpProxy) ? 0 : mHttpProxy.hashCode())
-                + mStackedLinks.hashCode() * 47);
+                + mStackedLinks.hashCode() * 47)
+                + mMtu * 51;
     }
 
     /**
@@ -548,7 +574,7 @@ public class LinkProperties implements Parcelable {
             dest.writeByteArray(d.getAddress());
         }
         dest.writeString(mDomains);
-
+        dest.writeInt(mMtu);
         dest.writeInt(mRoutes.size());
         for(RouteInfo route : mRoutes) {
             dest.writeParcelable(route, flags);
@@ -587,6 +613,7 @@ public class LinkProperties implements Parcelable {
                     } catch (UnknownHostException e) { }
                 }
                 netProp.setDomains(in.readString());
+                netProp.setMtu(in.readInt());
                 addressCount = in.readInt();
                 for (int i=0; i<addressCount; i++) {
                     netProp.addRoute((RouteInfo)in.readParcelable(null));
