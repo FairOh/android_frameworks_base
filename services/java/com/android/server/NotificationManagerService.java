@@ -1825,7 +1825,9 @@ public class NotificationManagerService extends INotificationManager.Stub
                     mSoundNotification = r;
                     // do not play notifications if stream volume is 0
                     // (typically because ringer mode is silent) or if speech recognition is active.
+                    // Or, if camcorder is active.
                     if ((audioManager.getStreamVolume(audioStreamType) != 0)
+                            && !audioManager.isCamcorderActive()
                             && !audioManager.isSpeechRecognitionActive()) {
                         final long identity = Binder.clearCallingIdentity();
                         try {
@@ -1859,7 +1861,10 @@ public class NotificationManagerService extends INotificationManager.Stub
                         && !(audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)) {
                     mVibrateNotification = r;
 
-                    if (useDefaultVibrate || convertSoundToVibration) {
+                    if ((useDefaultVibrate || convertSoundToVibration)
+                            // do not play notifications if speech recognition or camcorder is active.
+                            && !audioManager.isCamcorderActive()
+                            && !audioManager.isSpeechRecognitionActive()) {
                         // Escalate privileges so we can use the vibrator even if the notifying app
                         // does not have the VIBRATE permission.
                         long identity = Binder.clearCallingIdentity();

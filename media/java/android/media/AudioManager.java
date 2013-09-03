@@ -1553,6 +1553,16 @@ public class AudioManager {
 
     /**
      * @hide
+     * Checks whether camcorder is active
+     * @return true if a recording with source {@link MediaRecorder.AudioSource#CAMCORDER}
+     *    is underway.
+     */
+    public boolean isCamcorderActive() {
+        return AudioSystem.isSourceActive(MediaRecorder.AudioSource.CAMCORDER);
+    }
+
+    /**
+     * @hide
      * If the stream is active locally or remotely, adjust its volume according to the enforced
      * priority rules.
      * Note: only AudioManager.STREAM_MUSIC is supported at the moment
