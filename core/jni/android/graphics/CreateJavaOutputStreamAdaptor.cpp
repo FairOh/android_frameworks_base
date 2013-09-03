@@ -142,6 +142,12 @@ private:
     size_t      fBytesRead;
 };
 
+SkMemoryStream* CopyJavaInputStream(JNIEnv* env, jobject stream,
+                                    jbyteArray storage) {
+    /* Build-time compatibility stub for now */
+    return NULL;
+}
+
 SkStream* CreateJavaInputStreamAdaptor(JNIEnv* env, jobject stream,
                                        jbyteArray storage, int markSize) {
     static bool gInited;

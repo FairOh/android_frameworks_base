@@ -9,5 +9,7 @@ SkStream* CreateJavaInputStreamAdaptor(JNIEnv* env, jobject stream,
                                        jbyteArray storage, int markSize = 0);
 SkWStream* CreateJavaOutputStreamAdaptor(JNIEnv* env, jobject stream,
                                          jbyteArray storage);
+SkMemoryStream* CopyJavaInputStream(JNIEnv* env, jobject stream,
+                                    jbyteArray storage);
 
 #endif
