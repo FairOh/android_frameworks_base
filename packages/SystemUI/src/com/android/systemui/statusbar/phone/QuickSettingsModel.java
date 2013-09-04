@@ -518,7 +518,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         if (string == null) return null;
         final int length = string.length();
         if (string.endsWith(".")) {
-            string.substring(0, length - 1);
+            return string.substring(0, length - 1);
         }
         return string;
     }
