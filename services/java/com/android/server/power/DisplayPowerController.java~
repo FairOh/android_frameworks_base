@@ -224,6 +224,13 @@ final class DisplayPowerController {
     // a stylish electron beam animation instead.
     private boolean mElectronBeamFadesConfig;
 
+<<<<<<< HEAD
+=======
+    // Slim settings - override config for ElectronBeam on or off
+    private boolean mElectronBeamOnEnabled;
+    private boolean mElectronBeamOffEnabled;
+
+>>>>>>> parent of a492c4a... Frameworks: ElectronBeam get some love (1/2)
     // The pending power request.
     // Initially null until the first call to requestPowerState.
     // Guarded by mLock.
@@ -595,6 +602,13 @@ final class DisplayPowerController {
             mustNotify = !mDisplayReadyLocked;
         }
 
+<<<<<<< HEAD
+=======
+        // update crt settings here, it's only two bools
+        mElectronBeamOnEnabled = mPowerRequest.electronBeamOnEnabled;
+        mElectronBeamOffEnabled = mPowerRequest.electronBeamOffEnabled;
+
+>>>>>>> parent of a492c4a... Frameworks: ElectronBeam get some love (1/2)
         // Initialize things the first time the power state is changed.
         if (mustInitialize) {
             initialize();

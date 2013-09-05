@@ -62,6 +62,13 @@ final class DisplayPowerRequest {
     // visible to the user.
     public boolean blockScreenOn;
 
+<<<<<<< HEAD
+=======
+    // ElectronBeam
+    public boolean electronBeamOnEnabled;
+    public boolean electronBeamOffEnabled;
+
+>>>>>>> parent of a492c4a... Frameworks: ElectronBeam get some love (1/2)
     public DisplayPowerRequest() {
         screenState = SCREEN_STATE_BRIGHT;
         useProximitySensor = false;
@@ -69,6 +76,12 @@ final class DisplayPowerRequest {
         screenAutoBrightnessAdjustment = 0.0f;
         useAutoBrightness = false;
         blockScreenOn = false;
+<<<<<<< HEAD
+=======
+        electronBeamOnEnabled = false;
+        electronBeamOffEnabled = false;
+>>>>>>> parent of a492c4a... Frameworks: ElectronBeam get some love (1/2)
+    }
 
     public DisplayPowerRequest(DisplayPowerRequest other) {
         copyFrom(other);
@@ -81,6 +94,11 @@ final class DisplayPowerRequest {
         screenAutoBrightnessAdjustment = other.screenAutoBrightnessAdjustment;
         useAutoBrightness = other.useAutoBrightness;
         blockScreenOn = other.blockScreenOn;
+<<<<<<< HEAD
+=======
+        electronBeamOnEnabled = other.electronBeamOnEnabled;
+        electronBeamOffEnabled = other.electronBeamOffEnabled;
+>>>>>>> parent of a492c4a... Frameworks: ElectronBeam get some love (1/2)
     }
 
     @Override
@@ -96,6 +114,13 @@ final class DisplayPowerRequest {
                 && screenBrightness == other.screenBrightness
                 && screenAutoBrightnessAdjustment == other.screenAutoBrightnessAdjustment
                 && useAutoBrightness == other.useAutoBrightness
+<<<<<<< HEAD
+                && blockScreenOn == other.blockScreenOn;
+=======
+                && blockScreenOn == other.blockScreenOn
+                && electronBeamOnEnabled == other.electronBeamOnEnabled
+                && electronBeamOffEnabled == other.electronBeamOffEnabled;
+>>>>>>> parent of a492c4a... Frameworks: ElectronBeam get some love (1/2)
     }
 
     @Override
@@ -110,5 +135,12 @@ final class DisplayPowerRequest {
                 + ", screenBrightness=" + screenBrightness
                 + ", screenAutoBrightnessAdjustment=" + screenAutoBrightnessAdjustment
                 + ", useAutoBrightness=" + useAutoBrightness
+<<<<<<< HEAD
+                + ", blockScreenOn=" + blockScreenOn;
+=======
+                + ", blockScreenOn=" + blockScreenOn
+                + ", electronBeamOnEnabled=" + electronBeamOnEnabled
+                + ", electronBeamOffEnabled=" + electronBeamOffEnabled;
+>>>>>>> parent of a492c4a... Frameworks: ElectronBeam get some love (1/2)
     }
 }
