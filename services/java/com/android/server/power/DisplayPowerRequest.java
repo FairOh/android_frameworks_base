@@ -62,10 +62,6 @@ final class DisplayPowerRequest {
     // visible to the user.
     public boolean blockScreenOn;
 
-    // ElectronBeam
-    public int electronBeamMode;
-    public boolean electronBeamOffEnabled;
-
     public DisplayPowerRequest() {
         screenState = SCREEN_STATE_BRIGHT;
         useProximitySensor = false;
@@ -73,8 +69,6 @@ final class DisplayPowerRequest {
         screenAutoBrightnessAdjustment = 0.0f;
         useAutoBrightness = false;
         blockScreenOn = false;
-        electronBeamMode = 0;
-        electronBeamOffEnabled = false;
     }
 
     public DisplayPowerRequest(DisplayPowerRequest other) {
@@ -88,8 +82,6 @@ final class DisplayPowerRequest {
         screenAutoBrightnessAdjustment = other.screenAutoBrightnessAdjustment;
         useAutoBrightness = other.useAutoBrightness;
         blockScreenOn = other.blockScreenOn;
-        electronBeamMode = other.electronBeamMode;
-        electronBeamOffEnabled = other.electronBeamOffEnabled;
     }
 
     public int getElectronBeamMode() {
@@ -109,9 +101,7 @@ final class DisplayPowerRequest {
                 && screenBrightness == other.screenBrightness
                 && screenAutoBrightnessAdjustment == other.screenAutoBrightnessAdjustment
                 && useAutoBrightness == other.useAutoBrightness
-                && blockScreenOn == other.blockScreenOn
-                && electronBeamMode == other.electronBeamMode
-                && electronBeamOffEnabled == other.electronBeamOffEnabled;
+                && blockScreenOn == other.blockScreenOn;
     }
 
     @Override
@@ -126,8 +116,6 @@ final class DisplayPowerRequest {
                 + ", screenBrightness=" + screenBrightness
                 + ", screenAutoBrightnessAdjustment=" + screenAutoBrightnessAdjustment
                 + ", useAutoBrightness=" + useAutoBrightness
-                + ", blockScreenOn=" + blockScreenOn
-                + ", electronBeamMode=" + electronBeamMode
-                + ", electronBeamOffEnabled=" + electronBeamOffEnabled;
+                + ", blockScreenOn=" + blockScreenOn;
     }
 }
