@@ -70,6 +70,8 @@ final class DisplayPowerRequest {
         useAutoBrightness = false;
         blockScreenOn = false;
 
+    }
+    
     public DisplayPowerRequest(DisplayPowerRequest other) {
         copyFrom(other);
     }
@@ -96,6 +98,7 @@ final class DisplayPowerRequest {
                 && screenBrightness == other.screenBrightness
                 && screenAutoBrightnessAdjustment == other.screenAutoBrightnessAdjustment
                 && useAutoBrightness == other.useAutoBrightness
+                && blockScreenOn == other.blockScreenOn;
     }
 
     @Override
@@ -110,5 +113,6 @@ final class DisplayPowerRequest {
                 + ", screenBrightness=" + screenBrightness
                 + ", screenAutoBrightnessAdjustment=" + screenAutoBrightnessAdjustment
                 + ", useAutoBrightness=" + useAutoBrightness
+                + ", blockScreenOn=" + blockScreenOn;
     }
 }

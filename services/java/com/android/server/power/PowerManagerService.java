@@ -537,8 +537,7 @@ public final class PowerManagerService extends IPowerManager.Stub
                 UserHandle.USER_CURRENT) != 0);
         mScreenOffTimeoutSetting = Settings.System.getIntForUser(resolver,
                 Settings.System.SCREEN_OFF_TIMEOUT, DEFAULT_SCREEN_OFF_TIMEOUT,
-                UserHandle.USER_CURRENT);
-        mStayOnWhilePluggedInSetting = Settings.Global.getInt(resolver,
+                UserHandle.USER_CURRENT); 
 
         final int oldScreenBrightnessSetting = mScreenBrightnessSetting;
         mScreenBrightnessSetting = Settings.System.getIntForUser(resolver,
