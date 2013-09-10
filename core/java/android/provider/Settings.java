@@ -2479,6 +2479,12 @@ public final class Settings {
         };
 
         /** 
+         * Whether to prevent loud volume levels when headset is first plugged in.
+         * @hide
+         */
+        public static final String SAFE_HEADSET_VOLUME = "safe_headset_volume";
+
+        /**
          * Stores values for custom lockscreen targets
          * @hide
          */
