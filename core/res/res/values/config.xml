@@ -1153,4 +1153,9 @@
     <!-- kill app long press back -->
     <integer name="config_backKillTimeout">2000</integer>
 
+    <!-- If this value is true, CSS (Concurrent Services Supported) flag is set by
+         vendor RIL. This is used to determine if concurrent voice and data services
+         are supported. -->
+    <bool name="config_css_from_ril">false</bool>
+
 </resources>
