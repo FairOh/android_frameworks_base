@@ -21,7 +21,6 @@ import com.android.internal.database.SortCursor;
 import android.annotation.SdkConstant;
 import android.annotation.SdkConstant.SdkConstantType;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -636,8 +635,7 @@ public class RingtoneManager {
     public static Uri getActualDefaultRingtoneUri(Context context, int type) {
         String setting = getSettingForType(type);
         if (setting == null) return null;
-        final String uriString = Settings.System.getStringForUser(context.getContentResolver(),
-                setting, ActivityManager.getCurrentUser());
+        final String uriString = Settings.System.getString(context.getContentResolver(), setting);
         return uriString != null ? Uri.parse(uriString) : null;
     }
     
